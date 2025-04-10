@@ -82,12 +82,14 @@ class MovieResource extends Resource
                     ->height(200)
                     ->getStateUsing(fn ($record) => 'https://res.cloudinary.com/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload/' . $record->image_url),
                 TextColumn::make('title')
+                    ->searchable()
                     ->label('Judul'),
                 TextColumn::make('genre')
                     ->label('Genre'),
                 TextColumn::make('origin')
                     ->label('Asal'),
                 TextColumn::make('him_rating')
+                    ->sortable()
                     ->label('Rating Diko')
                     ->badge()
                     ->color(function ($record) {
@@ -102,6 +104,7 @@ class MovieResource extends Resource
                         }
                     }),
                 TextColumn::make('her_rating')
+                    ->sortable()
                     ->label('Rating Kirani')
                     ->badge()
                     ->color(function ($record) {
@@ -121,6 +124,7 @@ class MovieResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

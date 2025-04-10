@@ -55,6 +55,8 @@ class PhotoResource extends Resource
                     ->height(200)
                     ->getStateUsing(fn ($record) => 'https://res.cloudinary.com/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload/' . $record->image_url),
                 SelectColumn::make('place_id')
+                    ->sortable()
+                    ->searchable()
                     ->label('Tempat')
                     ->options(Place::all()->pluck('name', 'id')),
             ])
@@ -63,6 +65,7 @@ class PhotoResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

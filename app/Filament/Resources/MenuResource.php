@@ -138,12 +138,14 @@ class MenuResource extends Resource
                     ->height(200)
                     ->getStateUsing(fn ($record) => 'https://res.cloudinary.com/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload/' . $record->image_url),
                 TextColumn::make('name')
+                    ->searchable()
                     ->label('Nama Menu'),
                 TextColumn::make('description')
                     ->wrap()
                     ->limit(50)
                     ->label('Deskripsi'),
                 TextColumn::make('price')
+                    ->sortable()
                     ->label('Harga'),
                 SelectColumn::make('portion')
                     ->label('Porsi Menu')
@@ -155,6 +157,7 @@ class MenuResource extends Resource
                         'super' => 'super',
                     ]),
                 TextColumn::make('him_rating')
+                    ->sortable()
                     ->label('Rating Diko')
                     ->badge()
                     ->color(function ($record) {
@@ -169,6 +172,7 @@ class MenuResource extends Resource
                         }
                     }),
                 TextColumn::make('her_rating')
+                    ->sortable()
                     ->label('Rating Kirani')
                     ->badge()
                     ->color(function ($record) {
@@ -183,6 +187,7 @@ class MenuResource extends Resource
                         }
                     }),
                 TextColumn::make('overall_rating')
+                    ->sortable()
                     ->label('Rating Total')
                     ->badge()
                     ->color(function ($record) {
@@ -199,6 +204,8 @@ class MenuResource extends Resource
                 ToggleColumn::make('is_fav')
                     ->label('Favorit'),
                 SelectColumn::make('place_id')
+                    ->sortable()
+                    ->searchable()
                     ->label('Tempat')
                     ->options(Place::all()->pluck('name', 'id')),
             ])
@@ -207,6 +214,7 @@ class MenuResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

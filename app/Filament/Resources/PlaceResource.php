@@ -171,6 +171,7 @@ class PlaceResource extends Resource
                     ->height(200)
                     ->getStateUsing(fn ($record) => 'https://res.cloudinary.com/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload/' . $record->image_url),
                 TextColumn::make('name')
+                    ->searchable()
                     ->label('Nama Tempat'),
                 TextColumn::make('description')
                     ->wrap()
@@ -200,10 +201,13 @@ class PlaceResource extends Resource
                 TextColumn::make('close_hour')
                     ->label('Jam Tutup'),
                 TextColumn::make('price_min')
+                    ->sortable()
                     ->label('Harga Paling Murah'),
                 TextColumn::make('price_max')
+                    ->sortable()
                     ->label('Harga Paling Mahal'),
                 TextColumn::make('him_rating')
+                    ->sortable()
                     ->label('Rating Diko')
                     ->badge()
                     ->color(function ($record) {
@@ -218,6 +222,7 @@ class PlaceResource extends Resource
                         }
                     }),
                 TextColumn::make('her_rating')
+                    ->sortable()
                     ->label('Rating Kirani')
                     ->badge()
                     ->color(function ($record) {
@@ -232,6 +237,7 @@ class PlaceResource extends Resource
                         }
                     }),
                 TextColumn::make('overall_rating')
+                    ->sortable()
                     ->label('Rating Total')
                     ->badge()
                     ->color(function ($record) {
@@ -259,6 +265,7 @@ class PlaceResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
