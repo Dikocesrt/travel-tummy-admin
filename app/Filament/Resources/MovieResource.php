@@ -85,8 +85,10 @@ class MovieResource extends Resource
                     ->searchable()
                     ->label('Judul'),
                 TextColumn::make('genre')
+                    ->searchable()
                     ->label('Genre'),
                 TextColumn::make('origin')
+                    ->searchable()
                     ->label('Asal'),
                 TextColumn::make('him_rating')
                     ->sortable()
