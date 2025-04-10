@@ -14,6 +14,10 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -22,7 +26,7 @@ class PlaceResource extends Resource
 {
     protected static ?string $model = Place::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
     public static function form(Form $form): Form
     {
@@ -85,8 +89,10 @@ class PlaceResource extends Resource
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $her = $get('her_rating');
-                        if ($her !== null) {
+                        if (!empty($her)) {
                             $set('overall_rating', ($state + $her) / 2);
+                        } else {
+                            $set('overall_rating', $state);
                         }
                     }),
                 TextInput::make('her_rating')
@@ -98,8 +104,10 @@ class PlaceResource extends Resource
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $him = $get('him_rating');
-                        if ($him !== null) {
+                        if (!empty($him)) {
                             $set('overall_rating', ($state + $him) / 2);
+                        } else {
+                            $set('overall_rating', $state);
                         }
                     }),
                 TextInput::make('overall_rating')
@@ -119,7 +127,7 @@ class PlaceResource extends Resource
                     ->disk('public')
                     ->directory('places')
                     ->visibility('public')
-                    ->required()
+                    ->required(fn (string $operation): bool => $operation === 'create')
                     ->preserveFilenames()
                     ->maxFiles(1),
                 FileUpload::make('map_url')
@@ -128,7 +136,7 @@ class PlaceResource extends Resource
                     ->disk('public')
                     ->directory('maps')
                     ->visibility('public')
-                    ->required()
+                    ->required(fn (string $operation): bool => $operation === 'create')
                     ->preserveFilenames()
                     ->maxFiles(1),
                 MarkdownEditor::make('description')
@@ -157,7 +165,94 @@ class PlaceResource extends Resource
     {
         return $table
             ->columns([
-                //
+                ImageColumn::make('image_url')
+                    ->label('Gambar')
+                    ->width(200)
+                    ->height(200)
+                    ->getStateUsing(fn ($record) => 'https://res.cloudinary.com/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload/' . $record->image_url),
+                TextColumn::make('name')
+                    ->label('Nama Tempat'),
+                TextColumn::make('description')
+                    ->wrap()
+                    ->limit(50)
+                    ->label('Deskripsi'),
+                SelectColumn::make('parking')
+                    ->label('Parkir')
+                    ->options([
+                        'free' => 'Free',
+                        'bayar' => 'Bayar',
+                    ]),
+                SelectColumn::make('wifi')
+                    ->label('Wifi Status')
+                    ->options([
+                        'lambat' => 'Lambat',
+                        'biasa' => 'Biasa',
+                        'lancar' => 'Lancar',
+                    ]),
+                SelectColumn::make('room')
+                    ->label('Tempat')
+                    ->options([
+                        'sempit' => 'Sempit',
+                        'luas' => 'Luas',
+                    ]),
+                TextColumn::make('open_hour')
+                    ->label('Jam Buka'),
+                TextColumn::make('close_hour')
+                    ->label('Jam Tutup'),
+                TextColumn::make('price_min')
+                    ->label('Harga Paling Murah'),
+                TextColumn::make('price_max')
+                    ->label('Harga Paling Mahal'),
+                TextColumn::make('him_rating')
+                    ->label('Rating Diko')
+                    ->badge()
+                    ->color(function ($record) {
+                        $rating = $record->him_rating;
+                
+                        if ($rating < 5) {
+                            return 'danger'; // merah
+                        } elseif ($rating < 7.5) {
+                            return 'warning'; // kuning
+                        } else {
+                            return 'success'; // hijau
+                        }
+                    }),
+                TextColumn::make('her_rating')
+                    ->label('Rating Kirani')
+                    ->badge()
+                    ->color(function ($record) {
+                        $rating = $record->her_rating;
+                
+                        if ($rating < 5) {
+                            return 'danger'; // merah
+                        } elseif ($rating < 7.5) {
+                            return 'warning'; // kuning
+                        } else {
+                            return 'success'; // hijau
+                        }
+                    }),
+                TextColumn::make('overall_rating')
+                    ->label('Rating Total')
+                    ->badge()
+                    ->color(function ($record) {
+                        $rating = $record->overall_rating;
+                
+                        if ($rating < 5) {
+                            return 'danger'; // merah
+                        } elseif ($rating < 7.5) {
+                            return 'warning'; // kuning
+                        } else {
+                            return 'success'; // hijau
+                        }
+                    }),
+                ToggleColumn::make('is_fav')
+                    ->label('Favorit'),
+                ImageColumn::make('map_url')
+                    ->label('Map')
+                    ->width(350)
+                    ->height(100)
+                    ->getStateUsing(fn ($record) => 'https://res.cloudinary.com/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload/' . $record->map_url),
+                
             ])
             ->filters([
                 //

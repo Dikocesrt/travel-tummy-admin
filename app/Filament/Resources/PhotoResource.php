@@ -12,6 +12,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -20,7 +22,7 @@ class PhotoResource extends Resource
 {
     protected static ?string $model = Photo::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-photo';
 
     public static function form(Form $form): Form
     {
@@ -32,7 +34,7 @@ class PhotoResource extends Resource
                     ->disk('public')
                     ->directory('us')
                     ->visibility('public')
-                    ->required()
+                    ->required(fn (string $operation): bool => $operation === 'create')
                     ->preserveFilenames()
                     ->maxFiles(1),
                 Select::make('place_id')
@@ -47,7 +49,14 @@ class PhotoResource extends Resource
     {
         return $table
             ->columns([
-                //
+                ImageColumn::make('image_url')
+                    ->label('Gambar')
+                    ->width(200)
+                    ->height(200)
+                    ->getStateUsing(fn ($record) => 'https://res.cloudinary.com/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload/' . $record->image_url),
+                SelectColumn::make('place_id')
+                    ->label('Tempat')
+                    ->options(Place::all()->pluck('name', 'id')),
             ])
             ->filters([
                 //

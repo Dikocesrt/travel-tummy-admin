@@ -14,6 +14,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -25,30 +27,35 @@ class MovieResource extends Resource
 {
     protected static ?string $model = Movie::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-film';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('title')
+                    ->placeholder("Agak Laen")
                     ->required()
                     ->maxLength(255)
                     ->label('Judul Film'),
                 TextInput::make('genre')
+                    ->placeholder("Horror, Komedi")
                     ->required()
                     ->maxLength(255)
                     ->label('Genre Film'),
                 TextInput::make('origin')
+                    ->placeholder("Indonesia")
                     ->required()
                     ->maxLength(255)
                     ->label('Asal Film'),
                 TextInput::make('him_rating')
+                    ->placeholder("8.5")
                     ->required()
                     ->numeric()
                     ->inputMode('decimal')
                     ->label('Rating Diko'),
                 TextInput::make('her_rating')
+                    ->placeholder("8.5")
                     ->required()
                     ->numeric()
                     ->inputMode('decimal')
@@ -59,7 +66,7 @@ class MovieResource extends Resource
                     ->disk('public') // Simpan sementara di storage/app/public
                     ->directory('movies') // Folder tempat simpan file lokal
                     ->visibility('public')
-                    ->required()
+                    ->required(fn (string $operation) => $operation === 'create')
                     ->preserveFilenames() // Supaya nama file tidak acak
                     ->maxFiles(1)
             ]);
@@ -69,7 +76,45 @@ class MovieResource extends Resource
     {
         return $table
             ->columns([
-                //
+                ImageColumn::make('image_url')
+                    ->label('Gambar')
+                    ->width(200)
+                    ->height(200)
+                    ->getStateUsing(fn ($record) => 'https://res.cloudinary.com/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload/' . $record->image_url),
+                TextColumn::make('title')
+                    ->label('Judul'),
+                TextColumn::make('genre')
+                    ->label('Genre'),
+                TextColumn::make('origin')
+                    ->label('Asal'),
+                TextColumn::make('him_rating')
+                    ->label('Rating Diko')
+                    ->badge()
+                    ->color(function ($record) {
+                        $rating = $record->him_rating;
+                
+                        if ($rating < 5) {
+                            return 'danger'; // merah
+                        } elseif ($rating < 7.5) {
+                            return 'warning'; // kuning
+                        } else {
+                            return 'success'; // hijau
+                        }
+                    }),
+                TextColumn::make('her_rating')
+                    ->label('Rating Kirani')
+                    ->badge()
+                    ->color(function ($record) {
+                        $rating = $record->her_rating;
+                
+                        if ($rating < 5) {
+                            return 'danger'; // merah
+                        } elseif ($rating < 7.5) {
+                            return 'warning'; // kuning
+                        } else {
+                            return 'success'; // hijau
+                        }
+                    }),
             ])
             ->filters([
                 //

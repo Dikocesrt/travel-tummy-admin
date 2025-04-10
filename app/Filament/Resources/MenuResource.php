@@ -15,6 +15,10 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -23,7 +27,7 @@ class MenuResource extends Resource
 {
     protected static ?string $model = Menu::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
     public static function form(Form $form): Form
     {
@@ -55,7 +59,7 @@ class MenuResource extends Resource
                     ->disk('public')
                     ->directory('menus')
                     ->visibility('public')
-                    ->required()
+                    ->required(fn (string $operation) => $operation === 'create')
                     ->preserveFilenames()
                     ->maxFiles(1),
                 TextInput::make('him_rating')
@@ -66,10 +70,10 @@ class MenuResource extends Resource
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $her = $get('her_rating');
-                        if ($her == null) {
-                            $set('overall_rating', $state);
-                        } else {
+                        if (!empty($her)) {
                             $set('overall_rating', ($state + $her) / 2);
+                        } else {
+                            $set('overall_rating', $state);
                         }
                     }),
                 TextInput::make('her_rating')
@@ -80,7 +84,7 @@ class MenuResource extends Resource
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $him = $get('him_rating');
-                        if ($him !== null) {
+                        if (!empty($him)) {
                             $set('overall_rating', ($state + $him) / 2);
                         } else {
                             $set('overall_rating', $state);
@@ -128,7 +132,75 @@ class MenuResource extends Resource
     {
         return $table
             ->columns([
-                //
+                ImageColumn::make('image_url')
+                    ->label('Gambar')
+                    ->width(200)
+                    ->height(200)
+                    ->getStateUsing(fn ($record) => 'https://res.cloudinary.com/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload/' . $record->image_url),
+                TextColumn::make('name')
+                    ->label('Nama Menu'),
+                TextColumn::make('description')
+                    ->wrap()
+                    ->limit(50)
+                    ->label('Deskripsi'),
+                TextColumn::make('price')
+                    ->label('Harga'),
+                SelectColumn::make('portion')
+                    ->label('Porsi Menu')
+                    ->options([
+                        'cemil' => 'cemil',
+                        'lumayan' => 'lumayan',
+                        'ngenyangin' => 'ngenyangin',
+                        'banyak' => 'banyak',
+                        'super' => 'super',
+                    ]),
+                TextColumn::make('him_rating')
+                    ->label('Rating Diko')
+                    ->badge()
+                    ->color(function ($record) {
+                        $rating = $record->him_rating;
+                
+                        if ($rating < 5) {
+                            return 'danger'; // merah
+                        } elseif ($rating < 7.5) {
+                            return 'warning'; // kuning
+                        } else {
+                            return 'success'; // hijau
+                        }
+                    }),
+                TextColumn::make('her_rating')
+                    ->label('Rating Kirani')
+                    ->badge()
+                    ->color(function ($record) {
+                        $rating = $record->her_rating;
+                
+                        if ($rating < 5) {
+                            return 'danger'; // merah
+                        } elseif ($rating < 7.5) {
+                            return 'warning'; // kuning
+                        } else {
+                            return 'success'; // hijau
+                        }
+                    }),
+                TextColumn::make('overall_rating')
+                    ->label('Rating Total')
+                    ->badge()
+                    ->color(function ($record) {
+                        $rating = $record->overall_rating;
+                
+                        if ($rating < 5) {
+                            return 'danger'; // merah
+                        } elseif ($rating < 7.5) {
+                            return 'warning'; // kuning
+                        } else {
+                            return 'success'; // hijau
+                        }
+                    }),
+                ToggleColumn::make('is_fav')
+                    ->label('Favorit'),
+                SelectColumn::make('place_id')
+                    ->label('Tempat')
+                    ->options(Place::all()->pluck('name', 'id')),
             ])
             ->filters([
                 //
