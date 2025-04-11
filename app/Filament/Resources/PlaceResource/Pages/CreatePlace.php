@@ -23,8 +23,12 @@ class CreatePlace extends CreateRecord
         }
 
         // Hitung overall rating
-        if (isset($data['him_rating'], $data['her_rating'])) {
+        if (isset($data['him_rating']) && isset($data['her_rating'])) {
             $data['overall_rating'] = round(($data['him_rating'] + $data['her_rating']) / 2, 2);
+        } elseif (isset($data['her_rating'])) {
+            $data['overall_rating'] = $data['her_rating'];
+        } elseif (isset($data['him_rating'])) {
+            $data['overall_rating'] = $data['him_rating'];
         }
 
         // Konfigurasi Cloudinary sekali di awal

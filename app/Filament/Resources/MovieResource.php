@@ -50,13 +50,11 @@ class MovieResource extends Resource
                     ->label('Asal Film'),
                 TextInput::make('him_rating')
                     ->placeholder("8.5")
-                    ->required()
                     ->numeric()
                     ->inputMode('decimal')
                     ->label('Rating Diko'),
                 TextInput::make('her_rating')
                     ->placeholder("8.5")
-                    ->required()
                     ->numeric()
                     ->inputMode('decimal')
                     ->label('Rating Kirani'),
