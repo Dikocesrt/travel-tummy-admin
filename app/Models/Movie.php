@@ -11,11 +11,9 @@ use Illuminate\Support\Str;
 
 class Movie extends Model
 {
+    protected $table = 'movies';
+    
     use HasFactory, SoftDeletes;
-
-    const DELETED_AT = 'deletedAt';
-    const CREATED_AT = 'createdAt';
-    const UPDATED_AT = 'updatedAt';
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -28,6 +26,11 @@ class Movie extends Model
         'origin',
         'him_rating',
         'her_rating',
+    ];
+
+    protected $casts = [
+        'him_rating' => 'float',
+        'her_rating' => 'float',
     ];
 
     protected static function boot()

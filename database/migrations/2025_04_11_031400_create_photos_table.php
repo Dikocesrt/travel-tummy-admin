@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::create('photos', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('image_url');
+            $table->uuid('place_id');
+            $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('place_id')->references('id')->on('places')->onDelete('cascade');
         });
     }
 
@@ -21,8 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('photos');
     }
 };

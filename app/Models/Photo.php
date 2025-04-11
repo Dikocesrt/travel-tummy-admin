@@ -8,11 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Photo extends Model
 {
+    protected $table = 'photos';
+    
     use HasFactory, SoftDeletes;
-
-    const DELETED_AT = 'deletedAt';
-    const CREATED_AT = 'createdAt';
-    const UPDATED_AT = 'updatedAt';
 
     public $incrementing = false;
     protected $keyType = 'string';

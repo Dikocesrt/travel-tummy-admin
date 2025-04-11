@@ -8,11 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Place extends Model
 {
-    use HasFactory, SoftDeletes;
+    protected $table = 'places';
 
-    const DELETED_AT = 'deletedAt';
-    const CREATED_AT = 'createdAt';
-    const UPDATED_AT = 'updatedAt';
+    use HasFactory, SoftDeletes;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -34,6 +32,15 @@ class Place extends Model
         'overall_rating',
         'is_fav',
         'map_url',
+    ];
+
+    protected $casts = [
+        'is_fav' => 'boolean',
+        'price_min' => 'integer',
+        'price_max' => 'integer',
+        'him_rating' => 'float',
+        'her_rating' => 'float',
+        'overall_rating' => 'float',
     ];
 
     public function menus()
