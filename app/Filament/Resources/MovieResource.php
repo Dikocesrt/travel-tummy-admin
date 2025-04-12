@@ -59,6 +59,7 @@ class MovieResource extends Resource
                     ->inputMode('decimal')
                     ->label('Rating Kirani'),
                 FileUpload::make('image_url')
+                    ->maxSize(10240)
                     ->label('Upload Gambar')
                     ->image()
                     ->disk('public') // Simpan sementara di storage/app/public

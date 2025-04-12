@@ -54,6 +54,7 @@ class MenuResource extends Resource
                     ->label("Harga Menu")
                     ->numeric(),
                 FileUpload::make('image_url')
+                    ->maxSize(10240)
                     ->label('Upload Gambar Menu')
                     ->image()
                     ->disk('public')

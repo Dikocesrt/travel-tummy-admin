@@ -29,6 +29,7 @@ class PhotoResource extends Resource
         return $form
             ->schema([
                 FileUpload::make('image_url')
+                    ->maxSize(10240)
                     ->label('Upload Gambar')
                     ->image()
                     ->disk('public')

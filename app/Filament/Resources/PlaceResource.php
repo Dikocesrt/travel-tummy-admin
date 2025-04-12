@@ -122,6 +122,7 @@ class PlaceResource extends Resource
                     ->onColor('success')
                     ->offColor('danger'),
                 FileUpload::make('image_url')
+                    ->maxSize(10240)
                     ->label('Upload Gambar Tempat')
                     ->image()
                     ->disk('public')
@@ -131,6 +132,7 @@ class PlaceResource extends Resource
                     ->preserveFilenames()
                     ->maxFiles(1),
                 FileUpload::make('map_url')
+                    ->maxSize(10240)
                     ->label('Upload Map Tempat')
                     ->image()
                     ->disk('public')
