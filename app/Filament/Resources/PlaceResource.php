@@ -140,6 +140,11 @@ class PlaceResource extends Resource
                     ->required(fn (string $operation): bool => $operation === 'create')
                     ->preserveFilenames()
                     ->maxFiles(1),
+                TextInput::make('map_link')
+                    ->required()
+                    ->placeholder("https://maps.google.com/")
+                    ->label("Link Map Tempat")
+                    ->maxLength(255),
                 MarkdownEditor::make('description')
                     ->columnSpan('full')
                     ->required()

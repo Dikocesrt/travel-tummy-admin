@@ -16,6 +16,14 @@ class CreateMovie extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        if (isset($data['him_rating']) && isset($data['her_rating'])) {
+            $data['overall_rating'] = round(($data['him_rating'] + $data['her_rating']) / 2, 2);
+        } elseif (isset($data['her_rating'])) {
+            $data['overall_rating'] = $data['her_rating'];
+        } elseif (isset($data['him_rating'])) {
+            $data['overall_rating'] = $data['him_rating'];
+        }
+
         if (!empty($data['image_url'])) {
             $relativePath = $data['image_url'];
             $localPath = Storage::disk('public')->path($relativePath);

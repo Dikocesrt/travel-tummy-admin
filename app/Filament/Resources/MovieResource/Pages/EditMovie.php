@@ -19,6 +19,14 @@ class EditMovie extends EditRecord
         if (empty($data['image_url'])) {
             unset($data['image_url']);
         }
+
+        if (isset($data['him_rating']) && isset($data['her_rating'])) {
+            $data['overall_rating'] = round(($data['him_rating'] + $data['her_rating']) / 2, 2);
+        } elseif (isset($data['her_rating'])) {
+            $data['overall_rating'] = $data['her_rating'];
+        } elseif (isset($data['him_rating'])) {
+            $data['overall_rating'] = $data['him_rating'];
+        }
         
         if (!empty($data['image_url'])) {
             $relativePath = $data['image_url'];
