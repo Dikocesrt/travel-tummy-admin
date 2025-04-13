@@ -26,6 +26,7 @@ class Movie extends Model
         'origin',
         'him_rating',
         'her_rating',
+        'overall_rating',
     ];
 
     protected $casts = [

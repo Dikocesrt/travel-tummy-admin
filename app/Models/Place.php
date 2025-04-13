@@ -32,6 +32,7 @@ class Place extends Model
         'overall_rating',
         'is_fav',
         'map_url',
+        'map_link'
     ];
 
     protected $casts = [
