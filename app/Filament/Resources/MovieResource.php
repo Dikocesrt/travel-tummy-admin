@@ -119,6 +119,21 @@ class MovieResource extends Resource
                             return 'success'; // hijau
                         }
                     }),
+                TextColumn::make('overall_rating')
+                    ->sortable()
+                    ->label('Rating Total')
+                    ->badge()
+                    ->color(function ($record) {
+                        $rating = $record->overall_rating;
+                
+                        if ($rating < 5) {
+                            return 'danger'; // merah
+                        } elseif ($rating < 7.5) {
+                            return 'warning'; // kuning
+                        } else {
+                            return 'success'; // hijau
+                        }
+                    }),
             ])
             ->filters([
                 //

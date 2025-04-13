@@ -259,6 +259,8 @@ class PlaceResource extends Resource
                     }),
                 ToggleColumn::make('is_fav')
                     ->label('Favorit'),
+                TextColumn::make('map_link')
+                    ->label('Link Map'),
                 ImageColumn::make('map_url')
                     ->label('Map')
                     ->width(350)
