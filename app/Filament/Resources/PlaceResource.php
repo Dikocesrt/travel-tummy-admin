@@ -54,7 +54,6 @@ class PlaceResource extends Resource
                     ]),
                 Select::make('wifi')
                     ->label('Wifi Status')
-                    ->required()
                     ->options([
                         'lambat' => 'Lambat',
                         'biasa' => 'Biasa',
