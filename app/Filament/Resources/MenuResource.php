@@ -66,37 +66,11 @@ class MenuResource extends Resource
                 TextInput::make('him_rating')
                     ->placeholder("8.2")
                     ->label("Rating Diko")
-                    ->numeric()
-                    ->inputMode('decimal')
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                        $her = $get('her_rating');
-                        if (!empty($her)) {
-                            $set('overall_rating', ($state + $her) / 2);
-                        } else {
-                            $set('overall_rating', $state);
-                        }
-                    }),
+                    ->numeric(),
                 TextInput::make('her_rating')
                     ->placeholder("8.2")
                     ->label("Rating Kirani")
-                    ->numeric()
-                    ->inputMode('decimal')
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                        $him = $get('him_rating');
-                        if (!empty($him)) {
-                            $set('overall_rating', ($state + $him) / 2);
-                        } else {
-                            $set('overall_rating', $state);
-                        }
-                    }),
-                TextInput::make('overall_rating')
-                    ->required()
-                    ->label("Rating Total")
-                    ->numeric()
-                    ->inputMode('decimal')
-                    ->disabled(),
+                    ->numeric(),
                 Toggle::make('is_fav')
                     ->required()
                     ->label('Favorit')
@@ -133,11 +107,20 @@ class MenuResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('created_at')
+                    ->sortable()
+                    ->label('Waktu Input')
+                    ->dateTime(),
                 ImageColumn::make('image_url')
                     ->label('Gambar')
                     ->width(200)
                     ->height(200)
                     ->getStateUsing(fn ($record) => 'https://res.cloudinary.com/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload/' . $record->image_url),
+                SelectColumn::make('place_id')
+                    ->sortable()
+                    ->searchable()
+                    ->label('Tempat')
+                    ->options(Place::all()->pluck('name', 'id')),
                 TextColumn::make('name')
                     ->searchable()
                     ->label('Nama Menu'),
@@ -204,11 +187,6 @@ class MenuResource extends Resource
                     }),
                 ToggleColumn::make('is_fav')
                     ->label('Favorit'),
-                SelectColumn::make('place_id')
-                    ->sortable()
-                    ->searchable()
-                    ->label('Tempat')
-                    ->options(Place::all()->pluck('name', 'id')),
             ])
             ->filters([
                 //

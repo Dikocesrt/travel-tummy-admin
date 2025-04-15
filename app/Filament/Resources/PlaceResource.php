@@ -81,40 +81,12 @@ class PlaceResource extends Resource
                     ->numeric(),
                 TextInput::make('him_rating')
                     ->placeholder("8.2")
-                    ->required()
                     ->label("Rating Diko")
-                    ->numeric()
-                    ->inputMode('decimal')
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                        $her = $get('her_rating');
-                        if (!empty($her)) {
-                            $set('overall_rating', ($state + $her) / 2);
-                        } else {
-                            $set('overall_rating', $state);
-                        }
-                    }),
+                    ->numeric(),
                 TextInput::make('her_rating')
                     ->placeholder("8.2")
-                    ->required()
                     ->label("Rating Kirani")
-                    ->numeric()
-                    ->inputMode('decimal')
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                        $him = $get('him_rating');
-                        if (!empty($him)) {
-                            $set('overall_rating', ($state + $him) / 2);
-                        } else {
-                            $set('overall_rating', $state);
-                        }
-                    }),
-                TextInput::make('overall_rating')
-                    ->required()
-                    ->label("Rating Total")
-                    ->numeric()
-                    ->inputMode('decimal')
-                    ->disabled(),
+                    ->numeric(),
                 Toggle::make('is_fav')
                     ->required()
                     ->label('Favorit')
@@ -171,6 +143,10 @@ class PlaceResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('created_at')
+                    ->sortable()
+                    ->label('Waktu Input')
+                    ->dateTime(),
                 ImageColumn::make('image_url')
                     ->label('Gambar')
                     ->width(200)
@@ -266,7 +242,6 @@ class PlaceResource extends Resource
                     ->width(350)
                     ->height(100)
                     ->getStateUsing(fn ($record) => 'https://res.cloudinary.com/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload/' . $record->map_url),
-                
             ])
             ->filters([
                 //

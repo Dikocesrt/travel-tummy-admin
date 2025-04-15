@@ -51,12 +51,10 @@ class MovieResource extends Resource
                 TextInput::make('him_rating')
                     ->placeholder("8.5")
                     ->numeric()
-                    ->inputMode('decimal')
                     ->label('Rating Diko'),
                 TextInput::make('her_rating')
                     ->placeholder("8.5")
                     ->numeric()
-                    ->inputMode('decimal')
                     ->label('Rating Kirani'),
                 FileUpload::make('image_url')
                     ->maxSize(10240)
@@ -75,6 +73,10 @@ class MovieResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('created_at')
+                    ->sortable()
+                    ->label('Waktu Input')
+                    ->dateTime(),
                 ImageColumn::make('image_url')
                     ->label('Gambar')
                     ->width(200)
